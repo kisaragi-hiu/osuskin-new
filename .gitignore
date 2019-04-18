@@ -1,0 +1,11 @@
+*.blend1
+*.bak
+out/
+override/
+src/*.png
+*.swp
+.directory
+fonts/
+.cache
+to-move
+.out
