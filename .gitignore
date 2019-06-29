@@ -1,8 +1,9 @@
 *.blend1
 *.bak
+*.osk
 out/
 override/
-src/*.png
+*.png
 *.swp
 .directory
 fonts/
