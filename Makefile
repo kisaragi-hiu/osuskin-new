@@ -63,9 +63,21 @@ $(PICTURES_SVG): out/%.png: %.svg
 
 # }}}
 
+# Followpoint {{{
+followpoint-a = $(addprefix out/,followpoint-0@2x.png followpoint-1@2x.png followpoint-2@2x.png followpoint-3@2x.png followpoint-4@2x.png followpoint-5@2x.png followpoint-6@2x.png followpoint-7@2x.png)
+
+followpoint-b = $(addprefix out/,followpoint-8@2x.png followpoint-9@2x.png followpoint-10@2x.png followpoint-11@2x.png followpoint-12@2x.png followpoint-13@2x.png followpoint-14@2x.png followpoint-15@2x.png followpoint-16@2x.png)
+
+$(followpoint-a): followpoint-0@2x.svg
+	inkscape -z "$<" -e "$@"
+
+$(followpoint-b): followpoint-8@2x.svg
+	inkscape -z "$<" -e "$@"
+# }}}
+
 # Other {{{
 
-png: out/fail-background@2x.png out/pause-overlay@2x.png out/arrow-pause@2x.png out/arrow-warning@2x.png out/cursormiddle@2x.png out/cursor@2x.png $(PICTURES_SVG)
+png: out/fail-background@2x.png out/pause-overlay@2x.png out/arrow-pause@2x.png out/arrow-warning@2x.png out/cursormiddle@2x.png out/cursor@2x.png $(PICTURES_SVG) $(followpoint-a) $(followpoint-b)
 .PHONY: png
 
 out/fail-background@2x.png: backgrounds.blend
