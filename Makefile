@@ -6,6 +6,12 @@ include _make/empties.mk
 
 # Other
 
+fail-background@2x.png: backgrounds.blend
+	$(call blender_target, -f 1)
+
+pause-overlay@2x.png: backgrounds.blend
+	$(call blender_target, -f 2)
+
 arrow-pause@2x.png: arrows.blend
 	$(call blender_target, -f 1)
 
