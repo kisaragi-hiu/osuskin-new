@@ -1,5 +1,5 @@
 # render from dependency to target, with target as exact output name
-blender_target = blender -b "$<" -o "//$@\#" $(1) && mv "$@"? "$@"
+blender_target = blender -b "$<" -x 0 -F PNG -o "//$@\#" $(1) && mv "$@"? "$@"
 
 $(shell mkdir -p out)
 
@@ -7,10 +7,7 @@ $(shell mkdir -p out)
 # automatically render lmms projects
 AUDIO_LMMS = $(addprefix out/,$(notdir $(patsubst %.mmpz,%.wav,$(wildcard audio/*.mmpz))))
 
-lmms: $(AUDIO_LMMS)
-.PHONY: lmms
-
-audio: lmms out/failsound.ogg out/applause.ogg
+audio: $(AUDIO_LMMS) out/failsound.ogg out/applause.ogg
 .PHONY: audio
 
 $(AUDIO_LMMS): out/%.wav: audio/%.mmpz
@@ -39,27 +36,47 @@ $(empty-sprites): empty.png
 # 	cp assets/empty.wav "$@"
 # }}}
 
+# SVG Based {{{
+
+PICTURES_SVG = $(addprefix out/,$(patsubst %.svg,%.png,approachcircle@2x.svg hitcircle@2x.svg hitcircleoverlay@2x.svg inputoverlay-key.svg menu-button-background@2x.svg selection-tab@2x.svg sliderb@2x.svg sliderfollowcircle.svg sliderscorepoint@2x.svg sliderstartcircle@2x.svg sliderstartcircleoverlay@2x.svg spinner-middle2@2x.svg spinner-rpm@2x.svg))
+
+$(PICTURES_SVG): out/%.png: %.svg
+	inkscape -z "$<" -e "$@"
+
+# }}}
+
 # Other {{{
 
-fail-background@2x.png: backgrounds.blend
+png: out/fail-background@2x.png out/pause-overlay@2x.png out/arrow-pause@2x.png out/arrow-warning@2x.png out/cursormiddle@2x.png out/cursor@2x.png $(PICTURES_SVG)
+.PHONY: png
+
+out/fail-background@2x.png: backgrounds.blend
 	$(call blender_target, -f 1)
 
-pause-overlay@2x.png: backgrounds.blend
+out/pause-overlay@2x.png: backgrounds.blend
 	$(call blender_target, -f 2)
 
-arrow-pause@2x.png: arrows.blend
+out/arrow-pause@2x.png: arrows.blend
 	$(call blender_target, -f 1)
 
-arrow-warning@2x.png: arrows.blend
+out/arrow-warning@2x.png: arrows.blend
 	$(call blender_target, -f 2)
 
-cursormiddle@2x.png: cursor.blend
+out/cursormiddle@2x.png: cursor.blend
 	$(call blender_target, -f 1)
 
-cursor@2x.png: cursor.blend
+out/cursor@2x.png: cursor.blend
 	$(call blender_target, -f 2)
 
 # }}}
+
+# SD auto conversion
+
+SD = $(patsubst %.@2x.png,%,$(wildcard *@2x.png))
+
+# or convert -resize 50% "$<" "$@"
+$(SD): %.png: %@2x.png
+	vips resize "$<" "$@" 0.5
 
 newskin.zip: *.png
 	7z a "$@" $^
@@ -67,11 +84,6 @@ newskin.zip: *.png
 .PHONY: export
 export: newskin.zip
 	mv $< $(basename $<).osk
-
-PICTURES_SVG = approachcircle@2x.svg hitcircle@2x.svg hitcircleoverlay@2x.svg inputoverlay-key.svg menu-button-background@2x.svg selection-tab@2x.svg sliderb@2x.svg sliderfollowcircle.svg sliderscorepoint@2x.svg sliderstartcircle@2x.svg sliderstartcircleoverlay@2x.svg spinner-middle2@2x.svg spinner-rpm@2x.svg
-
-$(PICTURES_SVG): %.png: %.svg
-	inkscape -z "$<" -e "$(basename $<)".png
 
 # $(PICTURES_BLENDER_NORMAL): %.png: %.blend
 # 	blender -b "$<" -a
