@@ -1,16 +1,22 @@
 # render from dependency to target, with target as exact output name
-blender = blender -b "$<" -o "//$@\#" $(1) && mv "$@"? "$@"
+blender_target = blender -b "$<" -o "//$@\#" $(1) && mv "$@"? "$@"
 
 include _make/followpoint.mk
 include _make/empties.mk
 
 # Other
 
+arrow-pause@2x.png: arrows.blend
+	$(call blender_target, -f 1)
+
+arrow-warning@2x.png: arrows.blend
+	$(call blender_target, -f 2)
+
 cursormiddle@2x.png: cursor.blend
-	$(call blender, -f 1)
+	$(call blender_target, -f 1)
 
 cursor@2x.png: cursor.blend
-	$(call blender, -f 2)
+	$(call blender_target, -f 2)
 
 newskin.zip: *.png
 	7z a "$@" $^
