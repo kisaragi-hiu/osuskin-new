@@ -100,15 +100,21 @@ out/cursor@2x.png: cursor.blend
 
 # }}}
 
+# Animation {{{
+
+out/play-skip-0@2x.png: skip-ja.blend
+	blender -b "$<" -o "//out/play-skip-#@2x" -F PNG -a
+
+# }}}
+
 # SD auto conversion
-
-SD = $(patsubst %.@2x.png,%,$(wildcard *@2x.png))
-
+# SD = $(patsubst %.@2x.png,%,$(wildcard *@2x.png))
 # or convert -resize 50% "$<" "$@"
-$(SD): %.png: %@2x.png
-	vips resize "$<" "$@" 0.5
+# $(SD): %.png: %@2x.png
+# 	vips resize "$<" "$@" 0.5
 
-newskin.zip: *.png
+# do post processing (SD conversion, pngquant optimization...) here
+newskin.zip: out
 	7z a "$@" $^
 
 .PHONY: export
