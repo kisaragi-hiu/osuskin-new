@@ -3,6 +3,24 @@ blender_target = blender -b "$<" -x 0 -F PNG -o "//$@\#" $(1) && mv "$@"? "$@"
 
 $(shell mkdir -p out)
 
+# Font files {{{
+
+FONT_DIR_NOTOSANS = /usr/share/fonts/noto-cjk/
+FONT_DIR_OVERPASS = /usr/share/fonts/OTF/
+NOTOSANSCJK = $(addprefix assets/,NotoSansCJK-Black.ttc NotoSansCJK-Bold.ttc NotoSansCJK-DemiLight.ttc NotoSansCJK-Light.ttc NotoSansCJK-Medium.ttc NotoSansCJK-Regular.ttc NotoSansCJK-Thin.ttc)
+OVERPASS = $(addprefix assets/,overpass-bold-italic.otf overpass-bold.otf overpass-extrabold-italic.otf overpass-extrabold.otf overpass-extralight-italic.otf overpass-extralight.otf overpass-heavy-italic.otf overpass-heavy.otf overpass-italic.otf overpass-light-italic.otf overpass-light.otf overpass-regular.otf overpass-semibold-italic.otf overpass-semibold.otf overpass-thin-italic.otf overpass-thin.otf)
+
+$(NOTOSANSCJK): assets/%.ttc: $(FONT_DIR_NOTOSANS)/%.ttc
+	cp "$<" "$@"
+
+$(OVERPASS): assets/%.otf: $(FONT_DIR_OVERPASS)/%.otf
+	cp "$<" "$@"
+
+.PHONY: fonts
+fonts: $(NOTOSANSCJK) $(OVERPASS)
+
+# }}}
+
 # Audio {{{
 # automatically render lmms projects
 AUDIO_LMMS = $(addprefix out/,$(notdir $(patsubst %.mmpz,%.wav,$(wildcard audio/*.mmpz))))

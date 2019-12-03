@@ -10,3 +10,6 @@ fonts/
 .cache
 to-move
 .out
+assets/*.ttc
+assets/*.otf
+assets/*.ttf
